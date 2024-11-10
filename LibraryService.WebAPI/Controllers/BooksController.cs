@@ -20,5 +20,26 @@ namespace LibraryService.WebAPI.Controllers
         }
 
         // Implement the functionalities below
+
+        public async Task<IActionResult>AddBook(int libraryId,[FromBody] Book book)
+
+        {
+            var Library= await _librariesService.GetLibraryByIdAsync(libraryId);
+            if(library== null)
+            return NotFound();
+            await _booksService.AddBookAsync(libraryId,book);
+            return CreatedAtAction(nameof(GetBooks), new {libraryId},book};
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBooks(int libraryId)
+        {
+             var Library= await _librariesService.GetLibraryByIdAsync(libraryId);
+            if(library== null)
+            return NotFound();
+            var books= await _booksService.GetBooksByLibraryIdAsync(libraryId);
+            return Ok(books);
+            
+        }
     }
-}
